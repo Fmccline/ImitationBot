@@ -8,6 +8,7 @@ class GameState:
     BALL = 'ball'
     BOOST = 'boosts'
     TEAM = 'team'
+    SELF_BOOST = 'SELF_BOOST'
 
     def __init__(self, field_info):
         self.big_pads = self.add_big_pads(field_info)
@@ -42,20 +43,21 @@ class GameState:
                     state[self.OPPONENT_2] = self.get_car_state(car)
             elif car.name == name:
                 state[self.SELF] = self.get_car_state(car)
+                state[self.SELF_BOOST] = int(car.boost)
             else:
                 state[self.ALLY] = self.get_car_state(car)
 
     def get_car_state(self, car):
         car_location = car.physics.location
-        location_x = car_location.x
-        location_y = car_location.y
-        location_z = car_location.z
+        location_x = int(car_location.x)
+        location_y = int(car_location.y)
+        location_z = int(car_location.z)
         location = (location_x, location_y, location_z)
 
         car_velocity = car.physics.velocity
-        velocity_x = car_velocity.x
-        velocity_y = car_velocity.y
-        velocity_z = car_velocity.z
+        velocity_x = int(car_velocity.x)
+        velocity_y = int(car_velocity.y)
+        velocity_z = int(car_velocity.z)
         velocity = (velocity_x, velocity_y, velocity_z)
         
         car_state = {}
@@ -66,15 +68,15 @@ class GameState:
     def add_ball_state(self, state, packet):
         ball_state = {}
         ball_location = packet.game_ball.physics.location
-        location_x = ball_location.x
-        location_y = ball_location.y
-        location_z = ball_location.z
+        location_x = int(ball_location.x)
+        location_y = int(ball_location.y)
+        location_z = int(ball_location.z)
         location = (location_x, location_y, location_z)
 
         ball_velocity = packet.game_ball.physics.velocity
-        velocity_x = ball_velocity.x
-        velocity_y = ball_velocity.y
-        velocity_z = ball_velocity.z
+        velocity_x = int(ball_velocity.x)
+        velocity_y = int(ball_velocity.y)
+        velocity_z = int(ball_velocity.z)
         velocity = (velocity_x, velocity_y, velocity_z)
 
         ball_state = {}

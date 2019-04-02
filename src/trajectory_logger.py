@@ -4,6 +4,7 @@ import logging
 class TrajectoryLogger:
 
     LOG_DELAY = 20.0
+    TRAJECTORY_DELAY = 1.0
     STATE = 'state'
     ACTIONS = 'actions'
     PATH = 'C:/Users/Administrator/Programming/ReliefBot/logs/'
@@ -11,6 +12,7 @@ class TrajectoryLogger:
     def __init__(self, name):
         self.logger = self.setup_trajectory_logger(name)
         self.last_log = 0
+        self.last_trajectory = 0
         self.trajectories = self.make_new_trajectories()
 
     def setup_trajectory_logger(self, name):
@@ -33,7 +35,7 @@ class TrajectoryLogger:
         return trajectory_logger
 
     def make_new_trajectories(self):
-        trajectories = {self.STATE: [], self.ACTIONS: []}
+        trajectories = []
         return trajectories
 
     def log(self, seconds_elapsed):
@@ -42,6 +44,8 @@ class TrajectoryLogger:
             self.last_log = seconds_elapsed
             self.trajectories = self.make_new_trajectories()
 
-    def add_trajectory(self, state, actions):
-        self.trajectories[self.STATE].append(state)
-        self.trajectories[self.ACTIONS].append(actions)
+    def add_trajectory(self, state, actions, seconds_elapsed):
+        if seconds_elapsed - self.last_trajectory > self.TRAJECTORY_DELAY:
+            trajectory = {self.STATE: state, self.ACTIONS: actions}
+            self.trajectories.append(trajectory)
+            self.last_trajectory = seconds_elapsed

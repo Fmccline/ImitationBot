@@ -21,11 +21,11 @@ class GameState:
                 big_pads.append(i)
         return big_pads
 
-    def get_game_state(self, packet, team, name):
+    def get_game_state(self, packet, team, name, ball_prediction):
         state = {}
         self.add_team_state(state, team)
         self.add_car_states(state, packet, team, name)
-        self.add_ball_state(state, packet)
+        self.add_ball_state(state, packet, ball_prediction)
         self.add_boost_states(state, packet)
         return state
 
@@ -65,24 +65,25 @@ class GameState:
         car_state[self.VELOCITY] = velocity
         return car_state
 
-    def add_ball_state(self, state, packet):
-        ball_state = {}
-        ball_location = packet.game_ball.physics.location
-        location_x = int(ball_location.x)
-        location_y = int(ball_location.y)
-        location_z = int(ball_location.z)
-        location = (location_x, location_y, location_z)
-
-        ball_velocity = packet.game_ball.physics.velocity
-        velocity_x = int(ball_velocity.x)
-        velocity_y = int(ball_velocity.y)
-        velocity_z = int(ball_velocity.z)
-        velocity = (velocity_x, velocity_y, velocity_z)
-
-        ball_state = {}
-        ball_state[self.LOCATION] = location
-        ball_state[self.VELOCITY] = velocity
-        state[self.BALL] = ball_state
+    def add_ball_state(self, state, packet, ball_prediction):
+        ball_states = {}
+        for ball_slice in [0, 60, 120, 180]: # gets ball prediction in 0, 1, 2, and 3 seconds
+            ball = ball_prediction.slices[ball_slice]
+            ball_location = ball.physics.location
+            location_x = int(ball_location.x)
+            location_y = int(ball_location.y)
+            location_z = int(ball_location.z)
+            location = (location_x, location_y, location_z)
+            ball_velocity = ball.physics.velocity
+            velocity_x = int(ball_velocity.x)
+            velocity_y = int(ball_velocity.y)
+            velocity_z = int(ball_velocity.z)
+            velocity = (velocity_x, velocity_y, velocity_z)
+            ball_state = {}
+            ball_state[self.LOCATION] = location
+            ball_state[self.VELOCITY] = velocity
+            ball_states[f'{self.BALL}_{ball_slice/60}'] = ball_state
+        state[self.BALL] = ball_states
 
     def add_boost_states(self, state, packet):
         boost_states = {}

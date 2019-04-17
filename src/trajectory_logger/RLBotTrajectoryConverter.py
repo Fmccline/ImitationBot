@@ -1,0 +1,69 @@
+from RLBotTrajectoryReader import RLBotTrajectoryReader
+import datetime
+
+from RLBotTrajectoryWriter import RLBotTrajectoryWriter
+
+
+class RLBotTrajectoryConverter:
+
+    def __init__(self, log_path, json_path):
+        self.log_path = log_path
+        self.json_path = json_path
+
+    def get_bot_files(self, start_date, end_date):
+        """
+        Gets log files from the start date up to but not including the end date
+
+        :param start_date: datetime.date
+        :param end_date: datetime.date
+        :return: list of tuples (filename, bot_name)
+        """
+        bot_files = []
+        bot_names = ['ReliefBot', 'ReliefBot(2)', 'ReliefBot(3)', 'ReliefBot(4)']
+        current_date = start_date
+        while current_date != end_date:
+            for bot_name in bot_names:
+                filename = f'{self.log_path}{bot_name}-{current_date}.log'
+                bot_file = (filename, bot_name)
+                bot_files.append(bot_file)
+            current_date += datetime.timedelta(days=1)
+        return bot_files
+
+    def convert_files_to_json(self, start_date, end_date):
+        output_file = f'{self.json_path}{start_date}_{end_date}-trajectories.json'
+        bot_files = self.get_bot_files(start_date, end_date)
+
+        trajectory_reader = RLBotTrajectoryReader()
+        all_trajectories = []
+        for filename, bot_name in bot_files:
+            trajectories = trajectory_reader.get_trajectories_from_file(filename, bot_name)
+            all_trajectories.append(trajectories)
+
+        RLBotTrajectoryWriter.write_trajectories_to_json(trajectories, output_file)
+
+    def convert_files_to_csv(self, start_date, end_date):
+        output_file = f'{self.json_path}{start_date}_{end_date}-trajectories.csv'
+        bot_files = self.get_bot_files(start_date, end_date)
+
+        trajectory_reader = RLBotTrajectoryReader()
+        all_trajectories = []
+        for filename, bot_name in bot_files:
+            trajectories = trajectory_reader.get_trajectories_from_file(filename, bot_name)
+            for trajectory in trajectories:
+                all_trajectories.append(trajectory)
+
+        RLBotTrajectoryWriter.write_trajectories_to_csv(all_trajectories, output_file)
+
+
+def main():
+    log_path = 'logs/'
+    output_path = 'csv/'
+    trajectory_converter = RLBotTrajectoryConverter(log_path, output_path)
+
+    end_date = datetime.date(year=2019, month=4, day=17)
+    start_date = end_date - datetime.timedelta(1)
+    trajectory_converter.convert_files_to_csv(start_date, end_date)
+
+
+if __name__ == '__main__':
+    main()

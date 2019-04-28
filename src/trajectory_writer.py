@@ -1,6 +1,6 @@
 import csv
 
-from Trajectory import Trajectory
+from trajectory import Trajectory
 
 
 class RLBotTrajectoryWriter:
@@ -52,6 +52,7 @@ class RLBotTrajectoryWriter:
                     continue
                 as_csv = RLBotTrajectoryWriter.normalize_data_list(as_csv)
                 writer.writerow(as_csv)
+            print(f'Trajectories out of bounds {Trajectory.OUT_OF_BOUNDS}')
             print(f'Missed {failed_states} states/actions')
             print(f'Wrote {len(trajectories) - failed_states} total trajectories to {filename} with {len(column_names)} features')
 
@@ -98,32 +99,8 @@ class RLBotTrajectoryWriter:
     @staticmethod
     def add_actions(as_csv, actions):
         for action_name in Trajectory.ACTIONS:
-            action = round(actions[action_name] * 2) / 2.0
+            action = round(actions[action_name] * 4) / 4.0
             as_csv.append(action)
-
-    @staticmethod
-    def add_normalized_location(as_csv, position):
-        x = position[0] / Trajectory.FIELD_X
-        y = position[1] / Trajectory.FIELD_Y
-        z = position[2] / Trajectory.FIELD_Z
-        positions = [x, y, z]
-        as_csv = as_csv + positions
-
-    @staticmethod
-    def add_normalized_velocity(as_csv, position):
-        vx = position[0] / Trajectory.MAX_SPEED
-        vy = position[1] / Trajectory.MAX_SPEED
-        vz = position[2] / Trajectory.MAX_SPEED
-        velocities = [vx, vy, vz]
-        as_csv = as_csv + velocities
-
-    @staticmethod
-    def add_normalized_rotation(as_csv, rotation):
-        x = position[0] / Trajectory.MAX_ROTATION
-        y = position[1] / Trajectory.MAX_ROTATION
-        z = position[2] / Trajectory.MAX_ROTATION
-        positions = [x, y, z]
-        as_csv = as_csv + positions
 
     @staticmethod
     def normalize_data_list(data):

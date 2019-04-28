@@ -1,7 +1,6 @@
-from keras.models import Sequential
-from keras.layers import Dense
 import numpy as np
 from sklearn.model_selection import train_test_split
+from adadelta_model import AdadeltaModel
 
 X = 'x'
 Y = 'y'
@@ -12,14 +11,15 @@ def main():
     print(f"Loading data from {filename}")
     train_data, test_data = get_input_output_data(filename)
     print("Created X and Y training data")
-    model = get_model()
+    adadelta_model = AdadeltaModel(16, 8, [32, 16, 8])
+    model = adadelta_model.model
     batch_size = 50
-    epochs = 10
+    epochs = 5
     model.fit(train_data[X], train_data[Y], epochs=epochs, batch_size=batch_size)
     print(f"Evaluating the model with batch size {batch_size} over {epochs} epochs")
     scores = model.evaluate(test_data[X], test_data[Y])
     print("\n%s: %.2f%%" % (model.metrics_names[1], scores[1] * 100))
-    save_model_to_file(model, "models/model.json", "models/model.h5")
+    adadelta_model.save_model_to_file()
     total_predictions = 10
     x_data = test_data[X][:total_predictions, :]
     prediction = model.predict(x_data)
@@ -53,25 +53,6 @@ def get_x_data(dataset):
             X_data[row_index, column_index] = x2[row_index, column]
             column_index += 1
     return X_data
-
-
-def get_model():
-    model = Sequential()
-    model.add(Dense(16, input_dim=16, activation='tanh'))
-    # model.add(Dense(32, activation='tanh'))
-    model.add(Dense(8, activation='tanh'))
-    model.compile(optimizer ='sgd', loss='mean_absolute_error', metrics=['accuracy'])
-    return model
-
-
-def save_model_to_file(model, model_path, weight_path):
-    # serialize model to JSON
-    model_json = model.to_json()
-    with open(model_path, "w+") as json_file:
-        json_file.write(model_json)
-    # serialize weights to HDF5
-    model.save_weights(weight_path)
-    print(f"Saved model to {model_path} and weights to {weight_path}")
 
 
 if __name__ == '__main__':

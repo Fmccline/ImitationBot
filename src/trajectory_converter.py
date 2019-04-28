@@ -1,7 +1,19 @@
-from RLBotTrajectoryReader import RLBotTrajectoryReader
+from trajectory_reader import RLBotTrajectoryReader
 import datetime
 
-from RLBotTrajectoryWriter import RLBotTrajectoryWriter
+from trajectory_writer import RLBotTrajectoryWriter
+
+
+def main():
+    log_path = 'logs/'
+    output_path = 'csv/'
+    trajectory_converter = RLBotTrajectoryConverter(log_path, output_path)
+
+    date_range = 8
+    end_date = datetime.date(year=2019, month=4, day=22)
+    start_date = end_date - datetime.timedelta(date_range)
+    skipped_dates = [datetime.date(year=2019, month=4, day=17)]
+    trajectory_converter.convert_files_to_csv(start_date, end_date, skipped_dates)
 
 
 class RLBotTrajectoryConverter:
@@ -43,18 +55,6 @@ class RLBotTrajectoryConverter:
                 all_trajectories.append(trajectory)
         print(f"Writing {len(all_trajectories)} to {output_file}")
         RLBotTrajectoryWriter.write_trajectories_to_csv(all_trajectories, output_file)
-
-
-def main():
-    log_path = 'logs/'
-    output_path = 'csv/'
-    trajectory_converter = RLBotTrajectoryConverter(log_path, output_path)
-
-    skipped_dates = [datetime.date(year=2019, month=4, day=17)]
-    date_range = 1
-    end_date = datetime.date(year=2019, month=4, day=22)
-    start_date = end_date - datetime.timedelta(date_range)
-    trajectory_converter.convert_files_to_csv(start_date, end_date, skipped_dates)
 
 
 if __name__ == '__main__':

@@ -2,7 +2,7 @@ class Trajectory:
     FIELD_X = 8192 / 2.0
     FIELD_Y = 11964 / 2.0 # found through testing and bounding between [-1, 1]
     FIELD_Z = 2044.0
-    MAX_ROTATION = 3.142
+    MAX_ROTATION = 10.0
     MAX_SPEED = 3950.0 # found through testing and bounding between [-1, 1]
 
     LOCATION = 'location'
@@ -21,6 +21,8 @@ class Trajectory:
     BOOST_STATES = ['boost_3', 'boost_4', 'boost_15', 'boost_18', 'boost_29', 'boost_30']
     ACTION = 'actions'
     ACTIONS = ['throttle', 'steer', 'pitch', 'yaw', 'roll', 'jump', 'boost', 'handbrake']
+
+    OUT_OF_BOUNDS = 0
 
     @staticmethod
     def get_normalized_location(position):
@@ -54,4 +56,6 @@ class Trajectory:
         for index in range(len(data)):
             x = data[index]
             if x > 1 or x < -1:
-                print(f'{x} at index {index} is not within bounds: {message}')
+                # print(f'{x} at index {index} is not within bounds: {message}')
+                Trajectory.OUT_OF_BOUNDS += 1
+

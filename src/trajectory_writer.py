@@ -34,6 +34,7 @@ class RLBotTrajectoryWriter:
                         'throttle', 'steer', 'pitch', 'yaw', 'roll', 'jump', 'boost', 'handbrake']
 
         failed_states = 0
+        t_num = 0
         with open(filename, "w+", newline='') as file:
             writer = csv.writer(file)
             writer.writerow(column_names)
@@ -47,6 +48,9 @@ class RLBotTrajectoryWriter:
                     RLBotTrajectoryWriter.add_balls(as_csv, state)
                     RLBotTrajectoryWriter.add_boosts(as_csv, state)
                     RLBotTrajectoryWriter.add_actions(as_csv, actions)
+                    t_num += 1
+                    if t_num % 25000 == 0:
+                        print(f"Written {t_num} trajectories so far")
                 except Exception as e:
                     failed_states += 1
                     continue

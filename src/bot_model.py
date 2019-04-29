@@ -4,34 +4,38 @@ class BotModel:
 	MODEL_PATH = f'{BASE_PATH}'
 	WEIGHTS_PATH = f'{BASE_PATH}'
 
-	def __init__(self, input_num, output_num, layers):
+	def __init__(self, input_num = 0, output_num = 0, layers = []):
 		self.input_num = input_num
 		self.output_num = output_num
 		self.layers = layers
 		self.activation = 'tanh'
-		self.name = 'No_Name_Jeff'
-		self.model = self.make_model()
+		self.model = None
 
 	def compile_model(self, model):
 		pass
 
+	def get_name(self):
+		pass
+
 	def get_model_path(self):
-		return f'{self.MODEL_PATH}{self.name}.json'
+		return f'{self.MODEL_PATH}{self.get_name()}.json'
 
 	def get_model_weights(self):
-		return f'{self.WEIGHTS_PATH}{self.name}.h5'
+		return f'{self.WEIGHTS_PATH}{self.get_name()}.h5'
 
-	def make_model(self):
-		from keras.models import Sequential
-		from keras.layers import Dense
+	def get_model(self):
+		if self.model is None:
+			from keras.models import Sequential
+			from keras.layers import Dense
 
-		model = Sequential()
-		model.add(Dense(self.layers[0], input_dim=self.input_num, activation=self.activation))
-		for layer in self.layers[1:]:
-			model.add(Dense(layer, activation=self.activation))
-		model.add(Dense(self.output_num, activation=self.activation))
-		model = self.compile_model(model)
-		return model
+			model = Sequential()
+			model.add(Dense(self.layers[0], input_dim=self.input_num, activation=self.activation))
+			for layer in self.layers[1:]:
+				model.add(Dense(layer, activation=self.activation))
+			model.add(Dense(self.output_num, activation=self.activation))
+			model = self.compile_model(model)
+			self.model = model
+		return self.model
 
 	def save_model_to_file(self):
 		# serialize model to JSON

@@ -1,36 +1,47 @@
 import numpy as np
+import pandas as pd
+import random
 from sklearn.model_selection import train_test_split
 from adadelta_model import AdadeltaModel
+
 
 X = 'x'
 Y = 'y'
 
 
 def main():
-    filename = 'csv/2019-04-21_2019-04-22-trajectories.csv'
-    print(f"Loading data from {filename}")
+    date1 = 14
+    date2 = 27
+    filename = f'csv/2019-04-{date1}_2019-04-{date2}-trajectories.csv' #'csv/2019-04-14_2019-04-27-trajectories.csv'
     train_data, test_data = get_input_output_data(filename)
-    print("Created X and Y training data")
-    adadelta_model = AdadeltaModel(16, 8, [32, 16, 8])
-    model = adadelta_model.model
-    batch_size = 50
+    adadelta_model = AdadeltaModel(16, 8, [8, 8])
+    model = adadelta_model.get_model()
+    batch_size = 100
     epochs = 5
     model.fit(train_data[X], train_data[Y], epochs=epochs, batch_size=batch_size)
     print(f"Evaluating the model with batch size {batch_size} over {epochs} epochs")
     scores = model.evaluate(test_data[X], test_data[Y])
     print("\n%s: %.2f%%" % (model.metrics_names[1], scores[1] * 100))
     adadelta_model.save_model_to_file()
-    total_predictions = 10
-    x_data = test_data[X][:total_predictions, :]
-    prediction = model.predict(x_data)
-    print(f'\n*****Predictions are\n{prediction}\n*****')
+    total_predictions = 20
+    prediction_data = np.zeros((total_predictions, 16))
+    for row in range(total_predictions):
+        index = random.randint(0, test_data[X].shape[0])
+        for column in range(16):
+            value = test_data[X][index, column]
+            prediction_data[row, column] = value
+    predictions = model.predict(prediction_data)
+    print(f'\n*****Predictions are\n{predictions}\n*****')
 
 
 def get_input_output_data(filename):
-    dataset = np.loadtxt(filename, delimiter=",", skiprows=1)
+    print(f"Loading data from {filename}")
+    df = pd.read_csv(filename, index_col=None, header=0)
+    dataset = df.to_numpy()
     Y_data = dataset[:, 72:80]
     X_data = get_x_data(dataset)
     X_train, X_test, Y_train, Y_test = train_test_split(X_data, Y_data, test_size=0.15)
+    print("Created X and Y training data")
     return {X: X_train, Y: Y_train}, {X: X_test, Y: Y_test}
 
 

@@ -2,6 +2,7 @@ from rlbot.agents.base_agent import BaseAgent, SimpleControllerState
 from rlbot.utils.structures.game_data_struct import GameTickPacket
 import numpy as np
 from trajectory import Trajectory
+from adadelta_model import AdadeltaModel
 
 
 class SimpleNNRLBot(BaseAgent):
@@ -12,7 +13,7 @@ class SimpleNNRLBot(BaseAgent):
     def initialize_agent(self):
         # This runs once before the bot starts up
         self.controller_state = SimpleControllerState()
-        self.model = self.load_model()
+        self.model = AdadeltaModel().load_model_from_json()
 
     def load_model(self):
         from keras.models import model_from_json

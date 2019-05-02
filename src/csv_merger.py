@@ -4,11 +4,11 @@ import glob
 
 filenames = []
 path = 'csv/'
-dates = [(21, 22), (26, 27)]
+dates = [('08', '14'), ('14', '27')]
 for date_range in dates:
 	filename = f'{path}2019-04-{date_range[0]}_2019-04-{date_range[1]}-trajectories.csv'
 	filenames.append(filename)
-output_file = f'{path}2019-04-{dates[0][0]}_2019-04-{dates[-1][1]}-trajectories.csv'
+output_file = f'{path}2019-04-{dates[0][0]}_2019-04-{dates[1][1]}-trajectories.csv'
 
 data_frames = []
 for filename in filenames:

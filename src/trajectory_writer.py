@@ -32,7 +32,7 @@ class RLBotTrajectoryWriter:
                         'ball3_vx', 'ball3_vy', 'ball3_vz',
                         'boost0', 'boost1', 'boost2', 'boost3', 'boost4', 'boost5', 'self_boost',
                         'throttle', 'steer', 'pitch', 'yaw', 'roll', 'jump', 'boost', 'handbrake']
-
+        c_names = ['team', 'selfx', 'selfy', 'selfz', 'to_ball_x', 'to_ball_y', 'to_ball_z', 'distance_from_ball', 'ball_speed', 'self_speed', 'throttle', 'steer', 'jump', 'boost']
         failed_states = 0
         t_num = 0
         with open(filename, "w+", newline='') as file:

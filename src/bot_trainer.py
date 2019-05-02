@@ -2,27 +2,26 @@ import numpy as np
 import pandas as pd
 import random
 from sklearn.model_selection import train_test_split
-from adadelta_model import AdadeltaModel
-
+import bot_models
 
 X = 'x'
 Y = 'y'
 
 
 def main():
-    date1 = 14
-    date2 = 27
-    filename = f'csv/2019-04-{date1}_2019-04-{date2}-trajectories.csv' #'csv/2019-04-14_2019-04-27-trajectories.csv'
+    date1 = '08'
+    date2 = '27'
+    filename = f'csv/2019-04-{date1}_2019-04-{date2}-trajectories.csv'
     train_data, test_data = get_input_output_data(filename)
-    adadelta_model = AdadeltaModel(16, 8, [8, 8])
-    model = adadelta_model.get_model()
+    model_wrapper = bot_models.AdadeltaModel(16, 8, [32, 8])
+    model = model_wrapper.get_model()
     batch_size = 100
     epochs = 5
     model.fit(train_data[X], train_data[Y], epochs=epochs, batch_size=batch_size)
     print(f"Evaluating the model with batch size {batch_size} over {epochs} epochs")
     scores = model.evaluate(test_data[X], test_data[Y])
     print("\n%s: %.2f%%" % (model.metrics_names[1], scores[1] * 100))
-    adadelta_model.save_model_to_file()
+    model_wrapper.save_model_to_file()
     total_predictions = 20
     prediction_data = np.zeros((total_predictions, 16))
     for row in range(total_predictions):

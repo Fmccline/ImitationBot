@@ -5,6 +5,8 @@ class Trajectory:
     MAX_ROTATION = 10.0
     MAX_SPEED = 3950.0 # found through testing and bounding between [-1, 1]
 
+    SPEEDS = ['NEG_FAST', 'NEG_SLOW', 'ZERO', 'SLOW', 'FAST']
+
     LOCATION = 'location'
     VELOCITY = 'velocity'
     ROTATION = 'rotation'

@@ -27,7 +27,7 @@ class BotModel:
 		if self.model is None:
 			from keras.models import Sequential
 			from keras.layers import Dense
-
+			
 			model = Sequential()
 			model.add(Dense(self.layers[0], input_dim=self.input_num, activation=self.activation))
 			for layer in self.layers[1:]:

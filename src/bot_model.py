@@ -30,8 +30,9 @@ class BotModel:
 			
 			model = Sequential()
 			model.add(Dense(self.layers[0], input_dim=self.input_num, activation=self.activation))
-			for layer in self.layers[1:]:
-				model.add(Dense(layer, activation=self.activation))
+			if len(self.layers) > 1:
+				for layer in self.layers[1:]:
+					model.add(Dense(layer, activation=self.activation))
 			model.add(Dense(self.output_num, activation=self.activation))
 			model = self.compile_model(model)
 			self.model = model

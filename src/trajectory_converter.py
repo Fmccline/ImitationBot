@@ -9,10 +9,12 @@ def main():
     output_path = 'csv/'
     trajectory_converter = RLBotTrajectoryConverter(log_path, output_path)
 
-    start_date = datetime.date(year=2019, month=4, day=8)
-    end_date = datetime.date(year=2019, month=4, day=14)
-    skipped_dates = [] #[datetime.date(year=2019, month=4, day=17)]
-    trajectory_converter.convert_files_to_csv(start_date, end_date, skipped_dates)
+    dates = ((8, 14), (14, 20), (20, 27))
+    for date in dates:
+        start_date = datetime.date(year=2019, month=4, day=date[0])
+        end_date = datetime.date(year=2019, month=4, day=date[1])
+        skipped_dates = [datetime.date(year=2019, month=4, day=17)]
+        trajectory_converter.convert_files_to_csv(start_date, end_date, skipped_dates)
 
 
 class RLBotTrajectoryConverter:

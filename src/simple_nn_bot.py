@@ -6,25 +6,14 @@ import bot_models
 
 
 class SimpleNNRLBot(BaseAgent):
-    BASE_PATH = 'C:/Users/Frank\'s Laptop/Desktop/Programming/Python/ImitationBot/src/models/'
-    MODEL_PATH = f'{BASE_PATH}model.json'
-    WEIGHTS_PATH = f'{BASE_PATH}model.h5'
 
     def initialize_agent(self):
         # This runs once before the bot starts up
         self.controller_state = SimpleControllerState()
-        self.model = bot_models.AdadeltaModel().load_model_from_json()
+        self.model = self.load_model()
 
     def load_model(self):
-        from keras.models import model_from_json
-        with open(self.MODEL_PATH, 'r') as json_file:
-            loaded_model_json = json_file.read()
-
-        loaded_model = model_from_json(loaded_model_json)
-        loaded_model.load_weights(self.WEIGHTS_PATH)
-        loaded_model.compile(optimizer ='adadelta', loss='mean_squared_error', metrics=['accuracy'])
-        print("Loaded model from disk")
-        return loaded_model
+        pass
 
     def get_output(self, packet: GameTickPacket) -> SimpleControllerState:
         # Get state
